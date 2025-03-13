@@ -5,8 +5,6 @@ import bookRoutes from './routes/bookRoutes';
 import sequelize from './config/database';
 
 // TODO: Import new route files
-// import authorRoutes from './routes/authorRoutes';
-// import categoryRoutes from './routes/categoryRoutes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,41 +22,8 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/books', bookRoutes);
 // TODO: Use the new routes
-// app.use('/authors', authorRoutes);
-// app.use('/categories', categoryRoutes);
 
 // TODO: Add route for dashboard
-// app.get('/dashboard', async (req, res) => {
-//   try {
-//     // Get statistics for dashboard
-//     const bookCount = await Book.count();
-//     const authorCount = await Author.count();
-//     const categoryCount = await Category.count();
-//     
-//     // Get recent books
-//     const recentBooks = await Book.findAll({
-//       limit: 5,
-//       order: [['createdAt', 'DESC']],
-//       include: [
-//         { model: Author, as: 'author' },
-//         { model: Category, as: 'categories' }
-//       ]
-//     });
-//     
-//     res.render('dashboard', {
-//       title: 'Dashboard',
-//       stats: {
-//         books: bookCount,
-//         authors: authorCount,
-//         categories: categoryCount
-//       },
-//       recentBooks: recentBooks.map(book => book.get({ plain: true }))
-//     });
-//   } catch (error) {
-//     console.error('Error in dashboard:', error);
-//     res.status(500).render('error', { error: 'Error loading dashboard' });
-//   }
-// });
 
 app.get('/', (req, res) => {
   res.redirect('/books');
