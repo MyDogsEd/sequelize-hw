@@ -1,9 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-// TODO: Import related models
-// import Author from './Author';
-// import Category from './Category';
-
+// DONE: Import related models
+import Author from './Author';
+import Category from './Category';
 
 class Book extends Model {
   public id!: number;
@@ -53,7 +52,9 @@ Book.init(
 );
 
 // TODO: Define Book -> Author association (belongs to)
+Book.belongsTo(Author)
 
 // TODO: Define Book -> Category association (many-to-many)
+Book.belongsToMany(Category, {through: "BookCategories"})
 
-export default Book; 
+export default Book;

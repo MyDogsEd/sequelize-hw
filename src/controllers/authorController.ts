@@ -1,15 +1,33 @@
 import { Request, Response } from 'express';
-// TODO: Import Book model
-// TODO: Import Author model
+
+// DONE: Import Book model
+import Book from '../models/Book'
+
+// DONE: Import Author model
+import Author from '../models/Author';
+
 
 // TODO: Implement get all authors
 export const getAllAuthors = async (req: Request, res: Response) => {
     // TODO: Get all authors with their book counts
+    try {
+        const authors = Author.findAll();
+        res.render('authors/index', authors)
+    } catch (err) {
+        console.error('Error in getAllBooks:', err);
+        res.status(500).render('error', { error: 'Error fetching authors' });
+    }
 };
 
 // TODO: Implement show author details
 export const getAuthor = async (req: Request, res: Response) => {
     // TODO: Get author with their books
+    try {
+        const author = Author.findOne()
+    } catch (err) {
+        console.error('Error in getAllBooks:', err);
+        res.status(500).render('error', { error: 'Error fetching authors' });
+    }
 };
 
 // TODO: Implement new author form

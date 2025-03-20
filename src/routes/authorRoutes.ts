@@ -24,4 +24,4 @@ router.post('/', createAuthor);
 router.post('/:id', updateAuthor);
 router.post('/:id/delete', deleteAuthor);
 
-export default router; 
+export default router;

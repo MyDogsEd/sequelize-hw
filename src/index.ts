@@ -5,6 +5,8 @@ import bookRoutes from './routes/bookRoutes';
 import sequelize from './config/database';
 
 // TODO: Import new route files
+import authorRoutes from './routes/authorRoutes'
+import categoryRoutes from './routes/categoryRoutes'
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,7 +23,10 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Routes
 app.use('/books', bookRoutes);
+
 // TODO: Use the new routes
+app.use('/authors', authorRoutes)
+app.use('/categories', categoryRoutes)
 
 // TODO: Add route for dashboard
 

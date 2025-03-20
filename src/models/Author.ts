@@ -3,14 +3,34 @@ import sequelize from '../config/database';
 import Book from './Book';
 
 
-// TODO: Implement the Author model
+// DONE: Implement the Author model
 class Author extends Model {
+    public id!: number;
+    public name!: string;
+    public bio!: string;
 }
 
-// TODO: Initialize the Author model
-Author.init(
-);
+// DONE: Initialize the Author model
+Author.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }, 
+    bio: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
+}, {
+    sequelize: sequelize,
+    modelName:"Author"
+});
 
-// TODO: Define associations
+// DONE: Define associations
+//Author.hasMany(Book)
 
-export default Author; 
+export default Author;
