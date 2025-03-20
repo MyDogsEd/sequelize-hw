@@ -1,5 +1,7 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, BelongsToGetAssociationMixin, BelongsToSetAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyCountAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyHasAssociationsMixin, BelongsToManyAddAssociationMixin, BelongsToManyAddAssociationsMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin } from 'sequelize';
 import sequelize from '../config/database';
+import Author from './Author';
+import Category from './Category';
 
 class Book extends Model {
   public id!: number;
@@ -7,6 +9,20 @@ class Book extends Model {
   public isbn!: string;
   public publishedYear!: number;
   public description!: string;
+
+  // Associations from Book.belongsTo(Author)
+  declare getAuthor: BelongsToGetAssociationMixin<Author>;
+  declare setAuthor: BelongsToSetAssociationMixin<Author, number>;
+
+  // Associations from Book.belongsToMany(Category)
+  declare getCategories: BelongsToManyGetAssociationsMixin<Category>;
+  declare countCategories: BelongsToManyCountAssociationsMixin;
+  declare hasCategory: BelongsToManyHasAssociationMixin<Category, number>;
+  declare hasCategories: BelongsToManyHasAssociationsMixin<Category, number>;
+  declare addCategory: BelongsToManyAddAssociationMixin<Category, number>;
+  declare addCategories: BelongsToManyAddAssociationsMixin<Category, number>;
+  declare removeCategory: BelongsToManyRemoveAssociationMixin<Category, number>;
+  declare removeCategories: BelongsToManyRemoveAssociationsMixin<Category, number>;
 }
 
 Book.init(
