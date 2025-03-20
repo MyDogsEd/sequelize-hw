@@ -1,8 +1,5 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 import sequelize from '../config/database';
-import Book from './Book';
-import { allowedNodeEnvironmentFlags } from 'process';
-
 
 // DONE: Implement the Category model
 class Category extends Model{
@@ -34,6 +31,6 @@ Category.init({
 );
 
 // DONE: define relationships
-//Category.belongsToMany(Book, {through: "BookCategories"})
+// -> done in relationships.ts
 
 export default Category;

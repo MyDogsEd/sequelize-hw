@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import Book from './Book';
 
 
 // DONE: Implement the Author model
@@ -19,11 +18,9 @@ Author.init({
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
     }, 
     bio: {
         type: DataTypes.STRING,
-        allowNull: false
     }
 }, {
     sequelize: sequelize,
@@ -31,6 +28,6 @@ Author.init({
 });
 
 // DONE: Define associations
-//Author.hasMany(Book)
+// -> done in relationships.ts
 
 export default Author;

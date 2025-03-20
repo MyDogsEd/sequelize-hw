@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<!-- TODO: Display author list with their book counts -->
+<!-- DONE: Display author list with their book counts -->
 <div class="row">
     {{#if authors.length}}
         {{#each authors}}
@@ -18,8 +18,8 @@
                             <h6 class="card-subtitle mb-2 text-muted">Born: {{birthYear}}</h6>
                         {{/if}}
                         
-                        <!-- TODO: Display book count -->
-                        <!-- <p class="card-text">Books: {{bookCount}}</p> -->
+                        <!-- DONE: Display book count -->
+                        <p class="card-text">Books: {{bookCount}}</p>
                         
                         {{#if bio}}
                             <p class="card-text">{{bio}}</p>

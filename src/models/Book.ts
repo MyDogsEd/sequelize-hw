@@ -1,8 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-// DONE: Import related models
-import Author from './Author';
-import Category from './Category';
 
 class Book extends Model {
   public id!: number;
@@ -35,15 +32,16 @@ Book.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-    },
-    authorId: {
+    },/*
+    for some reason the database won't load if this is not commented
+    authorId: { 
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'Authors',
         key: 'id'
       }
-    },
+    }, */
   },
   {
     sequelize,
@@ -51,10 +49,9 @@ Book.init(
   }
 );
 
-// TODO: Define Book -> Author association (belongs to)
-Book.belongsTo(Author)
+// DONE: Define Book -> Author association (belongs to)
+// DONE: Define Book -> Category association (many-to-many)
+// -> done in relationships.ts
 
-// TODO: Define Book -> Category association (many-to-many)
-Book.belongsToMany(Category, {through: "BookCategories"})
 
 export default Book;

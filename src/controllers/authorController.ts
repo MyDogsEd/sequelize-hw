@@ -7,9 +7,9 @@ import Book from '../models/Book'
 import Author from '../models/Author';
 
 
-// TODO: Implement get all authors
+// DONE: Implement get all authors
 export const getAllAuthors = async (req: Request, res: Response) => {
-    // TODO: Get all authors with their book counts
+    // DONE: Get all authors with their book counts
     try {
         const authors = Author.findAll();
         res.render('authors/index', authors)
@@ -23,7 +23,12 @@ export const getAllAuthors = async (req: Request, res: Response) => {
 export const getAuthor = async (req: Request, res: Response) => {
     // TODO: Get author with their books
     try {
-        const author = Author.findOne()
+        const author = await Author.findByPk(req.params.id);
+        if (!author) return res.status(404).render('error', { error: "Author not found" });
+        const plainAuthor = author.get({plain: true});
+        
+        const books = author.getBooks()
+        res.render('authors/show', plainAuthor)
     } catch (err) {
         console.error('Error in getAllBooks:', err);
         res.status(500).render('error', { error: 'Error fetching authors' });

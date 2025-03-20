@@ -7,6 +7,7 @@ import sequelize from './config/database';
 // TODO: Import new route files
 import authorRoutes from './routes/authorRoutes'
 import categoryRoutes from './routes/categoryRoutes'
+import createAssociations from './config/associations';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -53,5 +54,7 @@ const startServer = async () => {
     console.error('Unable to start server:', error);
   }
 };
+
+createAssociations();
 
 startServer(); 
