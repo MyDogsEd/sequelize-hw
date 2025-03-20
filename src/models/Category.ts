@@ -30,8 +30,7 @@ Category.init({
     allowNull: false,
   },
   description: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING
   }
 },
 {
