@@ -47,23 +47,27 @@ export const editAuthorForm = async (req: Request, res: Response) => {
 // TODO: Implement create author
 export const createAuthor = async (req: Request, res: Response) => {
     try {
-        const {name, bio, birthYear} = req.body;
 
+        // validate that the name exists
+        const {name, bio, birthYear} = req.body;
         if (!name) {
             return res.status(400).send("Author name is required.");
         }
 
+        // DONE: Check if author already exists
         const existingAuthor = await Author.findOne({ where: { name } });
         if (existingAuthor){
             return res.status(400).send("Author already exists. Author must be unique.");
         }
 
+        // Create the new author
         const newAuthor = await Author.create({
             name: name,
             bio: bio,
             birthYear: birthYear
         })
         
+        // redirect to the newly created author page
         res.redirect('/authors/' + newAuthor.id)
     }
 
@@ -71,9 +75,6 @@ export const createAuthor = async (req: Request, res: Response) => {
         console.error('Error in updateAuthor: ', err);
         res.status(500).render('Error updating author');
     }
-  
-    // TODO: Check if author already exists
-   
 };
 
 // DONE: Implement update author
