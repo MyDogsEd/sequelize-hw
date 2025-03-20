@@ -35,16 +35,39 @@ export const getAuthor = async (req: Request, res: Response) => {
     }
 };
 
-// TODO: Implement new author form
+// DONE: Implement new author form
 export const newAuthorForm = (req: Request, res: Response) => {
+    try {
+        res.render('authors/new', { 
+            title: 'Add New Author',
+        });
+    } 
+    catch (error) {
+        console.error('Error in newAuthorForm:', error);
+        res.status(500).render('error', { error: 'Error loading form' });
+    }
 };
 
-// TODO: Implement edit author form
+// DONE: Implement edit author form
 export const editAuthorForm = async (req: Request, res: Response) => {
-  
+    try {
+        const author = await Author.findByPk(req.params.id);
+        if (!author) return res.status(404).render('error', { error: "Author not found" });
+
+        const plainAuthor = author.get({plain: true});
+        
+        res.render('authors/edit', { 
+            author: plainAuthor
+        });
+    } 
+      
+    catch (error) {
+        console.error('Error in newAuthorForm:', error);
+        res.status(500).render('error', { error: 'Error loading form' });
+    }
 };
 
-// TODO: Implement create author
+// DONE: Implement create author
 export const createAuthor = async (req: Request, res: Response) => {
     try {
 
