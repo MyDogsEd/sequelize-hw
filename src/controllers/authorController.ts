@@ -11,8 +11,9 @@ import Author from '../models/Author';
 export const getAllAuthors = async (req: Request, res: Response) => {
     // DONE: Get all authors with their book counts
     try {
-        const authors = Author.findAll();
-        res.render('authors/index', authors)
+        const authors = await Author.findAll();
+        const plainAuthors = authors.map((a: Author) => a.get({ plain: true }));
+        res.render('authors/index', {authors: plainAuthors});
     } catch (err) {
         console.error('Error in getAllBooks: ', err);
         res.status(500).render('error', { error: 'Error fetching authors' });

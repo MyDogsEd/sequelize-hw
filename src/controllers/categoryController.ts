@@ -1,15 +1,18 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
 import Category from '../models/Category';
 import Book from '../models/Book';
-// TODO: Import Book model
+// DONE: Import Book model
 
 // Get all categories
 export const getAllCategories = async (req: Request, res: Response) => {
   try {
     // DONE: Get all categories with their book counts
     const categories = await Category.findAll({include: Book});
-    const plainCategories = categories.forEach((c: Category) => c.get({plain: true}))
+    const plainCategories = categories.map((c: Category) => {
+      const category = c.get({plain: true});
+      category.bookCount = c.Books.length;
+      return category;
+    });
 
     res.render('categories/index', {categories: plainCategories})
   } catch (error) {
@@ -21,11 +24,12 @@ export const getAllCategories = async (req: Request, res: Response) => {
 // Get a single category with its books
 export const getCategory = async (req: Request, res: Response) => {
   try {
-    // TODO: Get category with its books
+    // DONE: Get category with its books
     const category = await Category.findByPk(req.params.id, { include: Book });
     if (!category) return res.status(404).render('error', { error: "Category not found" });
 
-    res.render('categories/show', category)
+    const plainCategory = category.get({plain: true});
+    res.render('categories/show', {category: plainCategory})
   
   } catch (error) {
     console.error('Error in getCategory:', error);
@@ -103,9 +107,11 @@ export const updateCategory = async (req: Request, res: Response) => {
 
     //DONE: implement update category
     category.update({
-      name,
-      description
+      name: name,
+      description: description
     });
+
+    res.redirect('/categories')
 
   } catch (error) {
     console.error('Error in updateCategory:', error);
@@ -130,6 +136,8 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
     // delete the category
     category.destroy();
+
+    res.redirect('/categories')
 
   } catch (error) {
     console.error('Error in deleteCategory:', error);

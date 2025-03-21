@@ -16,6 +16,8 @@ class Category extends Model{
   declare setBooks: BelongsToManySetAssociationsMixin<Book, number>;
   declare addBook: BelongsToManyAddAssociationMixin<Book, number>;
   declare addBooks: BelongsToManyAddAssociationsMixin<Book, number>;
+  
+  declare Books: any; // used when include: Book
 }
 
 // DONE: Initialize the Category model
