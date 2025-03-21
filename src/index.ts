@@ -18,14 +18,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Handlebars setup
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({
+  helpers: {
+    eq: (a: any, b: any) => {a === b},
+    includes: (a: any[], b: any) => {a.includes(b)}
+  }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Routes
 app.use('/books', bookRoutes);
 
-// TODO: Use the new routes
+// DONE: Use the new routes
 app.use('/authors', authorRoutes)
 app.use('/categories', categoryRoutes)
 

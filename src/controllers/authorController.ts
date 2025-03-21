@@ -147,6 +147,8 @@ export const deleteAuthor = async (req: Request, res: Response) => {
 
         // Delete the author.
         author.destroy();
+
+        res.redirect('/authors')
     } 
     
     catch (err){

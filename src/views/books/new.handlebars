@@ -16,11 +16,11 @@
 
             <!-- TODO: Replace author text field with author dropdown -->
             <div class="mb-3">
-                <label for="author" class="form-label">Author</label>
-                <input type="text" class="form-control" id="author" name="author" value="{{book.author}}" required>
+                {{!-- <label for="author" class="form-label">Author</label> --}}
+                {{!-- <input type="text" class="form-control" id="author" name="author" value="{{book.author}}" required> --}}
                 
                 <!-- Author dropdown (uncomment when implementing author relationship) -->
-                <!--
+                
                 <label for="authorId" class="form-label">Author</label>
                 <select class="form-select" id="authorId" name="authorId" required>
                     <option value="">Select an author</option>
@@ -31,7 +31,7 @@
                 <div class="form-text">
                     <a href="/authors/new" target="_blank">+ Add a new author</a>
                 </div>
-                -->
+                
             </div>
 
             <div class="mb-3">
@@ -45,7 +45,7 @@
             </div>
 
             <!-- TODO: Add category selection (uncomment when implementing category relationship) -->
-            <!--
+            
             <div class="mb-3">
                 <label for="categoryIds" class="form-label">Categories</label>
                 <select class="form-select" id="categoryIds" name="categoryIds" multiple>
@@ -58,7 +58,7 @@
                     <a href="/categories/new" target="_blank">+ Add a new category</a>
                 </div>
             </div>
-            -->
+            
 
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>

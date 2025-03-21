@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Book from '../models/Book';
+import Author from '../models/Author';
+import Category from '../models/Category';
 // TODO: Import related models
 // import Author 
 // import Category 
@@ -30,10 +32,17 @@ export const getAllBooks = async (req: Request, res: Response) => {
 export const newBookForm = async (req: Request, res: Response) => {
   try {
     // TODO: Get authors and categories for dropdown menus
+    const authors = await Author.findAll();
+    const categories = await Category.findAll()
+
+    const plainAuthors = authors.map((a: Author) => a.get({plain: true}));
+    const plainCategories = categories.map((c: Category) => c.get({plain: true}));
     
     res.render('books/new', { 
       title: 'Add New Book',
       //TODO send back a authors and categories for the form
+      authors: plainAuthors,
+      categories: plainCategories
     });
   } catch (error) {
     console.error('Error in newBookForm:', error);
@@ -65,15 +74,19 @@ export const editBookForm = async (req: Request, res: Response) => {
     const book = await Book.findByPk(req.params.id);
     if (!book) return res.status(404).render('error', { error: 'Book not found' });
     
-    // TODO: Get all authors and categories for form dropdowns
+    // DONE: Get all authors and categories for form dropdowns
+    const authors = await Author.findAll({plain: true});
+    const categories = await Category.findAll({plain: true});
     
     // Get the selected category IDs for the book
     
     const plainBook = book.get({ plain: true });
     res.render('books/edit', { 
       book: plainBook, 
+      authors: authors,
+      categories: categories,
       title: `Edit ${plainBook.title}`,
-      //TODO send back authors and categories
+      //DONE send back authors and categories
     });
   } catch (error) {
     console.error('Error in editBookForm:', error);
@@ -84,49 +97,78 @@ export const editBookForm = async (req: Request, res: Response) => {
 // Create a new book
 export const createBook = async (req: Request, res: Response) => {
   try {
-    // TODO: Handle authorId instead of author field
-    const { title, author, isbn, publishedYear, description } = req.body;
+    // DONE: Handle authorId instead of author field
+    const { title, authorId, isbn, publishedYear, description, categoryIds } = req.body;
     
-    if (!title || !author || !isbn || !publishedYear) {
-      // TODO: Get authors and categories for dropdown menus if validation fails
-      
+    if (!title || !authorId || !isbn || !publishedYear) {
+      // DONE: Get authors and categories for dropdown menus if validation fails
       return res.status(400).render('books/new', {
         error: 'Please fill in all required fields',
         book: req.body,
         title: 'Add New Book',
-        //todo send back authors and categories
+        authors: (await Author.findAll()).map((a: Author) => a.get({plain: true})),
+        categories: (await Category.findAll()).map((c: Category) => c.get({plain: true}))
       });
     }
 
     const existingBook = await Book.findOne({ where: { isbn } });
     if (existingBook) {
-      // TODO: Get authors and categories for dropdown menus if validation fails
-      
+      // DONE: Get authors and categories for dropdown menus if validation fails
       return res.status(400).render('books/new', {
         error: 'A book with this ISBN already exists. ISBN must be unique.',
         book: req.body,
         title: 'Add New Book',
-        //todo send back authors and categories
+        authors: (await Author.findAll()).map((a: Author) => a.get({plain: true})),
+        categories: (await Category.findAll()).map((c: Category) => c.get({plain: true}))
       });
     }
 
-    // TODO: Create book with authorId instead of author field
-    
+    // DONE: Create book with authorId instead of author field
     const book = await Book.create({
       title,
-      author,
       isbn,
       publishedYear: parseInt(publishedYear, 10),
       description: description || ''
     });
-    
-    // TODO: Handle many-to-many relationship with categories
-    
+
+    // Find the author 
+    const author = await Author.findByPk(authorId);
+
+    // if author not found
+    if(!author) {
+      return res.status(400).render('books/new', {
+        error: 'A book must have an author.',
+        book: req.body,
+        title: 'Add New Book',
+        authors: (await Author.findAll()).map((a: Author) => a.get({plain: true})),
+        categories: (await Category.findAll()).map((c: Category) => c.get({plain: true}))
+      });
+    }
+
+    // add author
+    book.setAuthor(author);
+
+    // DONE: Handle many-to-many relationship with categories
+    // Get all selected categories
+    const categories = await Category.findAll({
+      where: {
+        id: { in: categoryIds }
+    }});
+
+    // add all categories to book
+    book.addCategories(categories);
+
+    // for each category, add this book to it
+    categories.forEach((c: Category) => c.addBook(book))
+
+    // Redirect to books page
     return res.redirect('/books');
-  } catch (error) {
+  } 
+  
+  catch (error) {
     console.error('Error in createBook:', error);
     
-    // TODO: Get authors and categories for dropdown menus if there's an error
+    // DONE: Get authors and categories for dropdown menus if there's an error
     
     let errorMessage = 'Error creating book. Please check your input.';
     if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
@@ -137,7 +179,8 @@ export const createBook = async (req: Request, res: Response) => {
       error: errorMessage,
       book: req.body,
       title: 'Add New Book',
-      //todo send back authors and categories
+      authors: (await Author.findAll()).map((a: Author) => a.get({plain: true})),
+      categories: (await Category.findAll()).map((c: Category) => c.get({plain: true}))
     });
   }
 };
@@ -148,33 +191,51 @@ export const updateBook = async (req: Request, res: Response) => {
     const book = await Book.findByPk(req.params.id);
     if (!book) return res.status(404).render('error', { error: 'Book not found' });
     
-    // TODO: Handle authorId instead of author field
-    const { title, author, isbn, publishedYear, description } = req.body;
+    // DONE: Handle authorId instead of author field
+    const { title, authorId, isbn, publishedYear, description, categoryIds } = req.body;
     
-    // TODO: Update book with authorId instead of author field
+    // DONE: Update book with authorId instead of author field
     
     await book.update({
       title,
-      author,
       isbn,
       publishedYear: parseInt(publishedYear, 10),
       description: description || ''
     });
-    
-    // TODO: Handle many-to-many relationship with categories
-    
+
+    book.setAuthor(authorId)
+
+    // DONE: Handle many-to-many relationship with categories
+    // Get all selected categories
+    const categories = await Category.findAll({
+      where: {
+        id: { in: categoryIds }
+    }});
+
+    // remove this book from all categories it belongs to
+    (await book.getCategories()).forEach((c: Category) => c.removeBook(book));
+
+    // remove all categories from this book
+    book.removeCategories(await Category.findAll());
+
+    // add new categories
+    book.addCategories(categories);
+    categories.forEach((c: Category) => c.addBook(book))
+
+    // redirect to books page
     return res.redirect('/books');
-  } catch (error) {
+  } 
+  
+  catch (error) {
     console.error('Error in updateBook:', error);
     
-    // TODO: Get all authors and categories for form dropdowns if there's an error
-    
+    // DONE: Get all authors and categories for form dropdowns if there's an error
     return res.status(400).render('books/edit', { 
       error: 'Error updating book. Please check your input.',
       book: { ...req.body, id: req.params.id },
       title: 'Edit Book',
-
-        //todo send back authors and categories
+      authors: (await Author.findAll()).map((a: Author) => a.get({plain: true})),
+      categories: (await Category.findAll()).map((c: Category) => c.get({plain: true}))
     });
   }
 };
@@ -185,7 +246,10 @@ export const deleteBook = async (req: Request, res: Response) => {
     const book = await Book.findByPk(req.params.id);
     if (!book) return res.status(404).render('error', { error: 'Book not found' });
     
-    // TODO: Before deleting, remove associations with categories
+    // DONE: Before deleting, remove associations with categories (and author)
+    (await book.getCategories()).forEach((c: Category) => c.removeBook(book));
+    (await book.getAuthor()).removeBook(book);
+
     
     await book.destroy();
     return res.redirect('/books');
